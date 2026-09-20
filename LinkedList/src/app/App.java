@@ -1,8 +1,13 @@
 //Escobar_Armando_6902510023_Bru_Cristian_6902510029
 package app;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 import co.edu.unicartagena.list.Lista;
+import model.BlockChain;
 import model.Bloque;
 
 public class App {
@@ -14,8 +19,8 @@ public class App {
         Scanner sc = new Scanner(System.in);
         Lista<Bloque> l = new Lista<>();
 
-
-
+        //===================// transacciones simuladas //===========//
+        BlockChain cadena = new BlockChain();
 
         //=======================================================//
 
@@ -24,63 +29,143 @@ public class App {
         do{
             //=====================// MENU //=====================//
             System.out.println("//============// Menu //============//");
-            System.out.println("1. Nueva Transaccion");     // create
-            System.out.println("2. Ver transacciones");     // read
-            System.out.println("3. Actualizar (Limitado)");     // update
-            System.out.println("4. Eliminar (limitado)");       // delete
-            System.out.println("5. Buscar");        // search
-            System.out.println("6. Guardar archivo");      // save, guarda en un archivo
-            System.out.println("7. Abrir archivo");     // open, abre el archivo que decribe los bloques blockchain
+            System.out.println("1. Nueva Transaccion");
+            System.out.println("2. Ver transacciones");
+            System.out.println("3. Actualizar (Limitado)");
+            System.out.println("4. Eliminar (limitado)");
+            System.out.println("5. Buscar");
+            System.out.println("6. Guardar archivo");
+            System.out.println("7. Abrir archivo");
             System.out.println("0. Salir");
             System.out.println("Seleccione una opcion: ");
 
-            //==================================================//
-
-
-
             op = sc.nextInt();
+            sc.nextLine();
 
             switch (op) {
-                case 1:
 
+                case 1:
+                    System.out.println("Ingrese la transaccion:");
+                    String transaccion = sc.nextLine();
+
+                    cadena.agregarBloque(transaccion);
+
+                    System.out.println("Transaccion agregada correctamente.");
                     break;
 
                 case 2:
-
+                    System.out.println("\n=== BLOCKCHAIN ===");
+                    cadena.mostrarCadena();
                     break;
 
                 case 3:
+                    if (cadena.getTamano() == 0) {
+                        System.out.println("La blockchain esta vacia. No hay bloques para actualizar.");
+                        break;
+                    }
 
+                    System.out.println("Ingrese el numero del bloque a rectificar:");
+                    int bloqueRectificar = sc.nextInt();
+                    sc.nextLine();
+
+                    System.out.println("Ingrese la nueva transaccion:");
+                    String nuevaTransaccion = sc.nextLine();
+
+                    cadena.rectificarBloque(bloqueRectificar, nuevaTransaccion);
+
+                    System.out.println("Bloque rectificado correctamente.");
                     break;
 
                 case 4:
+                    if (cadena.getTamano() == 0) {
+                        System.out.println("La blockchain esta vacia. No hay bloques para anular.");
+                        break;
+                    }
 
+                    System.out.println("Ingrese el numero del bloque a anular:");
+                    int bloqueAnular = sc.nextInt();
+                    sc.nextLine();
+
+                    System.out.println("Ingrese el motivo de anulacion:");
+                    String motivo = sc.nextLine();
+
+                    cadena.anularBloque(bloqueAnular, motivo);
+
+                    System.out.println("Bloque anulado correctamente.");
                     break;
 
                 case 5:
+                    if (cadena.getTamano() == 0) {
+                        System.out.println("La blockchain esta vacia. No hay bloques para buscar.");
+                        break;
+                    }
 
+                    System.out.println("Ingrese el hash del bloque:");
+                    String hash = sc.nextLine();
+
+                    Bloque encontrado = cadena.buscarBloque(hash);
+
+                    if (encontrado != null) {
+                        System.out.println("\n=== BLOQUE ENCONTRADO ===");
+                        System.out.println(encontrado);
+                    } else {
+                        System.out.println("No se encontro ningun bloque con ese hash.");
+                    }
                     break;
 
                 case 6:
+                    if (cadena.getTamano() == 0) {
+                        System.out.println("La blockchain esta vacia. No hay nada para guardar.");
+                        break;
+                    }
 
+                    Path carpeta = Paths.get("docs");
+
+                    try {
+                        Files.createDirectories(carpeta);
+
+                        Path archivo = carpeta.resolve("blockchain.txt");
+
+                        cadena.guardarArchivo(archivo);
+                        System.out.println("Blockchain guardada en: "
+                                + archivo.toAbsolutePath());
+                    } catch (IOException e) {
+                        System.out.println("Error con el archivo: " + e.getMessage());
+                    }
                     break;
 
                 case 7:
+                    Path carpetaAbrir = Paths.get("docs");
+                    Path archivoAbrir = carpetaAbrir.resolve("blockchain.txt");
 
+                    if (!Files.exists(archivoAbrir)) {
+                        System.out.println("No existe el archivo blockchain.txt en la carpeta docs.");
+                        break;
+                    }
+                    try {
+                        cadena.abrirArchivo(archivoAbrir);
+
+                        System.out.println("\n=== BLOCKCHAIN CARGADA ===");
+                        System.out.println("Cantidad de bloques: " + cadena.getTamano());
+
+                        cadena.mostrarCadena();
+                    } catch (IOException e) {
+                        System.out.println("Error con el archivo: " + e.getMessage());
+                    }
                     break;
 
                 case 0:
                     System.out.println("Saliendo exitosamente del sistema...");
-                        break;
+                    break;
 
                 default:
                     System.out.println("Ingrese una opcion valida!");
                     break;
             }
 
-
-
         }while (op != 0);
-       
+
+
     }
+
 }
