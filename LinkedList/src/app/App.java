@@ -18,9 +18,15 @@ public class App {
         int op;
         Scanner sc = new Scanner(System.in);
         Lista<Bloque> l = new Lista<>();
+        String nombre_archivo;
+
 
         //===================// transacciones simuladas //===========//
         BlockChain cadena = new BlockChain();
+        cadena.agregarBloque("Alice envía 10 BTC a Bob");
+        cadena.agregarBloque("Bob envía 5 BTC a Charlie");
+        cadena.agregarBloque("Charlie envía 2 BTC a Alice");
+        cadena.mostrarCadena();
 
         //=======================================================//
 
@@ -28,7 +34,7 @@ public class App {
 
         do{
             //=====================// MENU //=====================//
-            System.out.println("//============// Menu //============//");
+            System.out.println("\n//============// Menu //============//");
             System.out.println("1. Nueva Transaccion");
             System.out.println("2. Ver transacciones");
             System.out.println("3. Actualizar (Limitado)");
@@ -37,7 +43,7 @@ public class App {
             System.out.println("6. Guardar archivo");
             System.out.println("7. Abrir archivo");
             System.out.println("0. Salir");
-            System.out.println("Seleccione una opcion: ");
+            System.out.print("Seleccione una opcion: ");
 
             op = sc.nextInt();
             sc.nextLine();
@@ -121,13 +127,17 @@ public class App {
 
                     Path carpeta = Paths.get("docs");
 
+
+                    System.out.print("\nIngrese nombre del archivo:");
+                    nombre_archivo = sc.nextLine();
+                    nombre_archivo = nombre_archivo + ".txt";
                     try {
                         Files.createDirectories(carpeta);
 
-                        Path archivo = carpeta.resolve("blockchain.txt");
+                        Path archivo = carpeta.resolve(nombre_archivo);
 
                         cadena.guardarArchivo(archivo);
-                        System.out.println("Blockchain guardada en: "
+                        System.out.println(nombre_archivo + "guardada en: "
                                 + archivo.toAbsolutePath());
                     } catch (IOException e) {
                         System.out.println("Error con el archivo: " + e.getMessage());
@@ -136,10 +146,12 @@ public class App {
 
                 case 7:
                     Path carpetaAbrir = Paths.get("docs");
-                    Path archivoAbrir = carpetaAbrir.resolve("blockchain.txt");
+                    System.out.print("Ingrese nombre del archivo:");
+                    nombre_archivo = sc.nextLine() + ".txt";
+                    Path archivoAbrir = carpetaAbrir.resolve(nombre_archivo);
 
                     if (!Files.exists(archivoAbrir)) {
-                        System.out.println("No existe el archivo blockchain.txt en la carpeta docs.");
+                        System.out.println("No existe el archivo " + nombre_archivo + " en la carpeta docs.");
                         break;
                     }
                     try {

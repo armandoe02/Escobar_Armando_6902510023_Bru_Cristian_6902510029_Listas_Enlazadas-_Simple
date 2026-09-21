@@ -1,3 +1,0 @@
-1;None;8789c1e2;joan paso 500 a bru
-2;8789c1e2;ece955a8;bru paso 500 a joan
-3;ece955a8;78d8d341;armando paso 3000 a bru
