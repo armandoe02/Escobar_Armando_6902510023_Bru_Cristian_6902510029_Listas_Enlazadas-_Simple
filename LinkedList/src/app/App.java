@@ -51,7 +51,7 @@ public class App {
             switch (op) {
 
                 case 1:
-                    System.out.println("Ingrese la transaccion:");
+                    System.out.print("Ingrese la transaccion:");
                     String transaccion = sc.nextLine();
 
                     cadena.agregarBloque(transaccion);
